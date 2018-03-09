@@ -21,12 +21,12 @@ coco_names = 'coco.names'
 nine_names = '9k.names'
 
 def labels(meta, FLAGS):    
-    model = meta['name'].split('/')[-1]
+    model = os.path.basename(meta['name'])
     if model in voc_models: 
         print("Model has a VOC model name, loading VOC labels.")
         meta['labels'] = labels20
     else:
-        file = 'labels.txt'
+        file = FLAGS.labels
         if model in coco_models:
             print("Model has a coco model name, loading coco labels.")
             file = os.path.join(FLAGS.config, coco_names)
@@ -43,7 +43,7 @@ def labels(meta, FLAGS):
         meta['labels'] = labels20
 
 def is_inp(self, name): 
-    return name[-4:] in ['.jpg','.JPG', '.jpeg', '.JPEG', '.png', '.PNG']
+    return name.lower().endswith(('.jpg', '.jpeg', '.png'))
 
 def show(im, allobj, S, w, h, cellx, celly):
     for obj in allobj:
@@ -59,7 +59,7 @@ def show(im, allobj, S, w, h, cellx, celly):
             (int(centerx - ww/2), int(centery - hh/2)),
             (int(centerx + ww/2), int(centery + hh/2)),
             (0,0,255), 2)
-    cv2.imshow("result", im)
+    cv2.imshow('result', im)
     cv2.waitKey()
     cv2.destroyAllWindows()
 
