@@ -73,9 +73,9 @@ def main():
             lineType=cv2.LINE_AA)
 
         if 'cell phone' in labels:
-            out.write('frame', blank)
+            out.write(blank)
         else:
-            out.write('frame', disp)
+            out.write(disp)
 
         pipe.stdout.flush()
 
