@@ -1,4 +1,5 @@
 from darkflow.net.build import TFNet
+import subprocess as sp
 import numpy as np
 import cv2
 
@@ -11,18 +12,38 @@ OPTIONS = {
     "threshold": 0.1
 }
 
+FFMPEG_BIN = 'ffmpeg'
+command = [
+    FFMPEG_BIN,
+    '-i',
+    'fifo',  # fifo is the named pipe
+    '-pix_fmt',
+    'bgr24',  # opencv requires bgr24 pixel format.
+    '-vcodec',
+    'rawvideo',
+    '-an',
+    '-sn',  # we want to disable audio processing (there is no audio)
+    '-f',
+    'image2pipe',
+    '-'
+]
+pipe = sp.Popen(command, stdout=sp.PIPE, bufsize=10**8)
+
 
 def main():
     tfnet = TFNet(OPTIONS)
 
-    cap = cv2.VideoCapture('testfile.mpg')
-
     fourcc = cv2.VideoWriter_fourcc(*'MJPG')
     out = cv2.VideoWriter('cv_out.mpg', fourcc, 20.0, (640, 480))
 
-    while (cap.isOpened()):
+    while (True):
         # Capture frame-by-frame
-        ret, frame = cap.read()
+        raw_image = pipe.stdout.read(640 * 480 * 3)
+        # transform the byte read into a numpy array
+        frame = np.fromstring(raw_image, dtype='uint8')
+        frame = frame.reshape(
+            (480, 640,
+             3))  # Notice how height is specified first and then width
 
         # flip image horizontally to be mirror image
         disp = cv2.flip(frame, 1)
@@ -56,8 +77,9 @@ def main():
         else:
             out.write('frame', disp)
 
+        pipe.stdout.flush()
+
     # Release everything if job is finished
-    cap.release()
     out.release()
     cv2.destroyAllWindows()
 

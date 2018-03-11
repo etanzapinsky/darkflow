@@ -1,5 +1,4 @@
 import socket
-import numpy as np
 
 PORT = 9876
 BUFSIZE = 4096
@@ -14,7 +13,7 @@ print('listening ...')
 while True:
     conn, addr = serv.accept()
     print('client connected ... ', addr)
-    myfile = open('testfile.mpg', 'wb')
+    myfile = open('fifo', 'wb', 0)
 
     while True:
         data = conn.recv(BUFSIZE)
