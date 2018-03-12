@@ -33,8 +33,8 @@ pipe = sp.Popen(command, stdout=sp.PIPE, bufsize=10**8)
 def main():
     tfnet = TFNet(OPTIONS)
 
-    fourcc = cv2.VideoWriter_fourcc(*'FMP4')
-    out = cv2.VideoWriter('cv_out.mpg', fourcc, 20.0, (640, 480))
+    fourcc = cv2.VideoWriter_fourcc(*'XVID')
+    out = cv2.VideoWriter('cv_out.avi', fourcc, 20.0, (640, 480))
 
     while (True):
         # Capture frame-by-frame
