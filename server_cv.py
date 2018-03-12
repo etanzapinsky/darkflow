@@ -12,6 +12,7 @@ OPTIONS = {
     "threshold": 0.1
 }
 
+# creates pipe with correct name and config to get data streamed over the network
 FFMPEG_BIN = 'ffmpeg'
 command = [
     FFMPEG_BIN,
